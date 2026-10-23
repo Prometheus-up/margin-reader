@@ -1,0 +1,16 @@
+# 依赖与构建产物（可用 npm install / npm run build 重新生成）
+margin/node_modules/
+margin/out/
+margin/dist/
+margin/server/index.mjs
+margin/*.log
+
+# OCR 模型：18MB 二进制，体积大且可从文档里的来源重新获取
+margin/models/*.onnx
+
+# 临时探针脚本（调试用，不进存档）
+margin/_*
+
+# 系统垃圾
+Thumbs.db
+desktop.ini
