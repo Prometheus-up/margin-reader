@@ -1,5 +1,8 @@
 # 页边 Margin
 
+[![CI](https://github.com/Prometheus-up/margin-reader/actions/workflows/ci.yml/badge.svg)](https://github.com/Prometheus-up/margin-reader/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 > 在书页边上和 AI 说话，而不是让 AI 替你读书。
 
 一个本地优先的桌面阅读器：书存在自己电脑上，AI 只在你读到的那一页上说话——不拿后文剧透，也不替你把路走完。
