@@ -1,0 +1,36 @@
+{
+  "name": "margin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "页边 Margin —— 受认知边界约束的 AI 阅读平台",
+  "main": "./out/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "linkedom": "^0.18.11",
+    "onnxruntime-node": "^1.30.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.4.149",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^44.9.1",
+    "electron-vite": "^6.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.3.4",
+    "vitest": "^3.2.4"
+  }
+}
