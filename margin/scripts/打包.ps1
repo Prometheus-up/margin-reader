@@ -1,9 +1,10 @@
-# 打包免安装版本：输出到 D:\MarginApp\页边.exe（不要放到 Desktop\Clubhouse 树下，会被 ACL 拦）
+# 打包免安装版本：默认输出到 %USERPROFILE%\MarginApp\页边.exe，可用环境变量 MARGIN_OUT 覆盖。
+# 别输出到桌面同步目录（OneDrive 之类）下，容易触发 ACL 冲突。
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 
 $root = Split-Path -Parent $PSScriptRoot
-$out = 'D:\MarginApp'
+$out = if ($env:MARGIN_OUT) { $env:MARGIN_OUT } else { Join-Path $env:USERPROFILE 'MarginApp' }
 $dist = Join-Path $root 'node_modules\electron\dist'
 
 if (-not (Test-Path $dist)) { throw '找不到 electron，先跑 npm install' }
@@ -117,8 +118,8 @@ $readme = @'
   2. 在正文里拖选一段话，选一种讨论方式
   3. 右栏「设置」里填 AI 接口（OpenAI 兼容的 baseUrl + key + 模型名）
 
-书和划线存在：%APPDATA%\margin\margin.db
-启动日志在：%APPDATA%\margin\boot.log（打不开时把这个发我）
+书和划线存在：%APPDATA%\页边\margin.db
+启动日志在：%APPDATA%\页边\boot.log（打不开时把这个发我）
 '@
 [IO.File]::WriteAllText((Join-Path $out '使用说明.txt'), $readme, [Text.UTF8Encoding]::new($false))
 

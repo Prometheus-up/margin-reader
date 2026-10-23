@@ -1,8 +1,15 @@
 {
   "name": "margin",
-  "version": "0.1.0",
+  "version": "0.20.0",
   "private": true,
-  "description": "页边 Margin —— 受认知边界约束的 AI 阅读平台",
+  "description": "页边 Margin —— 受认知边界约束的本地 AI 阅读平台",
+  "license": "MIT",
+  "author": "jy130",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Prometheus-up/margin-reader.git"
+  },
+  "homepage": "https://github.com/Prometheus-up/margin-reader#readme",
   "main": "./out/main/index.js",
   "type": "module",
   "scripts": {

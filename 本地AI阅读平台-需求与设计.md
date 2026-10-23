@@ -321,16 +321,16 @@ settings(key, value)
 ### 12.2 排查过程（可复用）
 1. 打包完整性：与 `node_modules/electron/dist` 逐文件比对 SHA256，`icudtl.dat`/`v8_context_snapshot.bin`/`resources.pak`/各 DLL 全部一致；exe 亦同（246,588,416 字节）。
 2. 主进程代码：写一个 CommonJS `bootstrap.cjs` 作为入口，第一行就同步写日志，再 `import()` 真正的 ESM 主进程。结果在该目录下 **连这行日志都没产生** → 说明进程根本没进入 JS。
-3. 换位置复现：把同一套文件复制到 `%TEMP%`、`C:\Users\jy130\Desktop\mt1`、`D:\MarginApp`，全部正常启动（boot.log 依次出现 boot start → init db → createWindow → loadFile → ready），窗口标题 `页边 Margin`。
-4. 反向验证：把 `D:\MarginApp` 的原样内容复制回 `…\Clubhouse\…\bundle2`，又启动失败。
+3. 换位置复现：把同一套文件复制到 `%TEMP%`、`<工作目录>\mt1`、`<安装目录>`，全部正常启动（boot.log 依次出现 boot start → init db → createWindow → loadFile → ready），窗口标题 `页边 Margin`。
+4. 反向验证：把 `<安装目录>` 的原样内容复制回 `…\Clubhouse\…\bundle2`，又启动失败。
 5. 已排除：文件损坏、缺依赖、未签名/MotW（无 Zone.Identifier）、Defender/Kaspersky 事件、主进程 JS 报错。
 
 ### 12.3 结论
-问题不在程序，而在**所在目录**。`C:\Users\jy130\Desktop\Clubhouse` 这棵树的 ACL 里带有沙箱用户 SID（`S-1-4-…`、`CodexSandboxUsers`）和一个 `Everyone DENY DeleteSubdirectoriesAndFiles` 条目，启动器/安全检查层把这棵树下新生成的可执行文件当成不可信来源，因而在进程创建阶段就被拦掉（所以既没有进程也没有日志）。
+问题不在程序，而在**所在目录**。`<工作目录>` 这棵树的 ACL 里带有沙箱用户 SID（`S-1-4-…`、`CodexSandboxUsers`）和一个 `Everyone DENY DeleteSubdirectoriesAndFiles` 条目，启动器/安全检查层把这棵树下新生成的可执行文件当成不可信来源，因而在进程创建阶段就被拦掉（所以既没有进程也没有日志）。
 
 ### 12.4 最终部署（已验证）
-- 程序目录：`D:\MarginApp\`（`页边.exe` + resources + locales + 样例 + 使用说明.txt）
-- 桌面快捷方式：`C:\Users\jy130\Desktop\页边.lnk` → `D:\MarginApp\页边.exe`
+- 程序目录：`<安装目录>\`（`页边.exe` + resources + locales + 样例 + 使用说明.txt）
+- 桌面快捷方式：`<桌面>\页边.lnk` → `<安装目录>\页边.exe`
 - 验证方式：用 ShellExecute 启动该快捷方式，进程出现且 `MainWindowTitle = 页边 Margin`，boot.log 完整。
 - 数据目录：`%APPDATA%\页边\margin.db`（与网页版的 `%APPDATA%\margin\margin.db` 是两套，注意区分）
 
@@ -372,7 +372,7 @@ settings(key, value)
 - 修掉正文首块标题重复（首块若为 h1–h3 且文本等于节标题则不渲染）。
 
 ### 13.6 部署状态
-- 已构建并热替换 `D:\MarginApp\resources\app\out`（不换 exe），清理了旧 hash 资源，只剩 `index-C04LGdD8.js` + `index-D-LICKto.css`。
+- 已构建并热替换 `<安装目录>\resources\app\out`（不换 exe），清理了旧 hash 资源，只剩 `index-C04LGdD8.js` + `index-D-LICKto.css`。
 - **需要完全退出页边再重新打开**才能看到新界面。
 ---
 
@@ -830,7 +830,7 @@ MOBI 每条文本记录的尾部有一段附加数据（trailing entries）。�
 新增 `text.ts/snippetTitle()`：没有真目录时用该节正文第一句（≤16 字）命名，不再用编号。EPUB/MOBI/TXT 三条链路都已替换；txt 的章节正则去掉 `\b`（中文后没有词边界，导致《绝世唐门》1101 节全成占位，修复后 3172 个真章节）。
 
 ### 25.3 PDF 缺字与重复节
-- 缺字：pdfjs 解码中文 CID 字体需要 `cmaps` 与 `standard_fonts`。新增 `findAssetDir()` 多路径探测，并在部署时把两个目录复制到 `D:\MarginApp\resources\app\`。
+- 缺字：pdfjs 解码中文 CID 字体需要 `cmaps` 与 `standard_fonts`。新增 `findAssetDir()` 多路径探测，并在部署时把两个目录复制到 `<安装目录>\resources\app\`。
 - 同一页两个书签导致「下一节还是那页序言」：书签按页严格递增去重，并丢掉空区间。
 - 数字书签（1/2/3…）与「封面/目录」这类垃圾书签过滤掉；书签稀疏时按「每页前 3 段的第 X 章/序/前言」补章节；最后合并相邻同名节。
 
