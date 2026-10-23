@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: margin/package-lock.json
+
+      # electron 的二进制用不到，跳过 postinstall 能省几分钟
+      - name: 安装依赖
+        run: npm ci --ignore-scripts
+        working-directory: margin
+
+      - name: 类型检查
+        run: npm run typecheck
+        working-directory: margin
+
+      - name: 单元测试
+        run: npm test
+        working-directory: margin
